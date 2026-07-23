@@ -1,7 +1,10 @@
-!pip install pillow pandas numpy matplotlib seaborn scikit-learn
+
 # ============================================================
 # CELL 1: Imports
 # ============================================================
+
+
+
 
 import json
 import os

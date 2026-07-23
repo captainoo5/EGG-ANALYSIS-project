@@ -64,17 +64,44 @@ def main():
     # --- MAIN LAYOUT ---
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.markdown("### 📸 Image Acquisition")
-    uploaded_file = st.file_uploader(
-        label="Upload egg image",
-        type=["jpg", "jpeg", "png"],
+
+    # Image source selector: file upload or live camera capture.
+    # NOTE: st.camera_input uses the browser's camera API, so it works on
+    # Streamlit Community Cloud (HTTPS) and localhost — unlike cv2.VideoCapture,
+    # which would try to access the deployment server's camera.
+    source = st.radio(
+        "Select image source",
+        ["📁 Upload Image", "📷 Live Camera"],
+        horizontal=True,
         label_visibility="collapsed"
     )
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    if uploaded_file is not None:
-        try:
+
+    image = None
+    source_name = None
+
+    if source == "📁 Upload Image":
+        uploaded_file = st.file_uploader(
+            label="Upload egg image",
+            type=["jpg", "jpeg", "png"],
+            label_visibility="collapsed"
+        )
+        if uploaded_file is not None:
             image = Image.open(uploaded_file)
-            
+            source_name = uploaded_file.name
+    else:
+        st.caption("Allow camera access in your browser, position the egg in the live view, then click **Take Photo**.")
+        camera_file = st.camera_input(
+            label="Capture egg image with live camera",
+            label_visibility="collapsed"
+        )
+        if camera_file is not None:
+            image = Image.open(camera_file)
+            source_name = "Live Camera Capture"
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if image is not None:
+        try:
             # --- MAIN CONTENT GRID ---
             st.markdown("<div style='margin: 30px 0;'></div>", unsafe_allow_html=True)
             
@@ -87,7 +114,7 @@ def main():
                 st.image(image, use_column_width=True)
                 st.markdown(f"""
                     <div style="text-align: center; margin-top: 1rem;" class="text-muted">
-                        Source: {uploaded_file.name} | Dimensions: {image.size[0]}×{image.size[1]}
+                        Source: {source_name} | Dimensions: {image.size[0]}×{image.size[1]}
                     </div>
                 """, unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
