@@ -111,7 +111,10 @@ def main():
             with col_image:
                 st.markdown('<div class="glass-card">', unsafe_allow_html=True)
                 st.markdown("### 🖼️ Sample Visual Preview")
-                st.image(image, use_column_width=True)
+                if tuple(map(int, st.__version__.split('.')[:2])) >= (1, 50):
+                    st.image(image, width="stretch")
+                else:
+                    st.image(image, use_column_width=True)
                 st.markdown(f"""
                     <div style="text-align: center; margin-top: 1rem;" class="text-muted">
                         Source: {source_name} | Dimensions: {image.size[0]}×{image.size[1]}
