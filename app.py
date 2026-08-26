@@ -168,12 +168,7 @@ def main():
                             top_indices = np.argsort(cls_pred)[::-1]
                             for idx in top_indices:
                                 name = label_map.get(idx, f"Class {idx}").capitalize()
-                                academic_map = {
-                                    "Fertile": "Grade A (Fresh)", 
-                                    "Dead": "Grade C (Defective)", 
-                                    "Infertile": "Unclassified"
-                                }
-                                display_name = academic_map.get(name, name)
+                                display_name = name
                                 prob = cls_pred[idx]
                                 
                                 st.markdown(f"""

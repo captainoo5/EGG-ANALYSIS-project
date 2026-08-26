@@ -1,1 +1,1 @@
-{"dead": 0, "fertile": 1, "infertile": 2}
+{"fertile": 0, "infertile": 1, "dead-in-shell": 2}

@@ -316,15 +316,15 @@ def render_result_card(status, confidence):
     if "infertile" in status:
         ui_type = "rotten"
         icon = "🟡"
-        display_status = "Unclassified Sample (Requires Further Review)"
+        display_status = "Infertile"
     elif "fertile" in status or "fresh" in status:
         ui_type = "fresh"
         icon = "✨"
-        display_status = "Grade A (Fresh Egg – High Quality)"
+        display_status = "Fertile"
     elif "dead" in status or "rotten" in status:
         ui_type = "rotten"
         icon = "⚠️"
-        display_status = "Grade C (Defective Egg – Unfit for Consumption)"
+        display_status = "Dead-in-shell"
     else:
         icon = "🔍"
         display_status = "Unclassified Sample (Requires Further Review)"

@@ -70,10 +70,13 @@ for item in labels_json.get('files', []):
 
     full_path = base_dir / rel_path # Use base_dir for full path
 
+    normalized_label = str(label).lower().strip()
+    normalized_label = {'dead': 'dead-in-shell'}.get(normalized_label, normalized_label)
+
     records.append({
         'rel_path': rel_path,
         'path': str(full_path),
-        'label': str(label).lower().strip()
+        'label': normalized_label
     })
 
 df = pd.DataFrame(records)
@@ -92,7 +95,7 @@ os.makedirs(negative_samples_dir, exist_ok=True)
 negative_paths = []
 np.random.seed(42)
 
-num_negatives = int(len(df) * 0.3)
+num_negatives = min(int(len(df) * 0.3), 300)
 sample_images = np.random.choice(
     df['path'].values,
     size=min(num_negatives, len(df)),
@@ -270,14 +273,19 @@ early_stop = callbacks.EarlyStopping(
 history_s1 = model_s1.fit(
     train_ds_s1,
     validation_data=val_ds_s1,
-    epochs=5,
+    epochs=30,
     callbacks=[ckpt_s1, early_stop]
 )
 
 # ============================================================
 # CELL 8: Prepare Stage 2 Labels
 # ============================================================
-unique_labels = sorted(df['label'].unique())
+class_names = ['fertile', 'infertile', 'dead-in-shell']
+unknown_labels = sorted(set(df['label']) - set(class_names))
+if unknown_labels:
+    raise ValueError(f'Unexpected dataset labels: {unknown_labels}')
+
+unique_labels = class_names
 label_to_index = {label: idx for idx, label in enumerate(unique_labels)}
 index_to_label = {idx: label for label, idx in label_to_index.items()}
 
@@ -334,7 +342,7 @@ ckpt_s2 = callbacks.ModelCheckpoint(
 history_s2 = model_s2.fit(
     train_ds_s2,
     validation_data=val_ds_s2,
-    epochs=10,
+    epochs=30,
     callbacks=[ckpt_s2, early_stop] # `early_stop` is defined in Cell 7, assuming it's still in scope.
 )
 
