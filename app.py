@@ -213,9 +213,6 @@ def main():
     st.markdown(f"""
         <div style="text-align: center; padding: 3rem; opacity: 0.7; font-size: 0.875rem;">
             <p>Developed as part of an academic research project on AI-based poultry quality assessment</p>
-            <p style="color: {ui_components.COLORS[st.session_state.theme]['primary']}; font-weight: 600;">
-                Nigerian Army University Biu – Artificial Intelligence in Agriculture Research
-            </p>
         </div>
     """, unsafe_allow_html=True)
 
